@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB 0 Fnd Cookies Submission</title>
+    <!--টেলিগ্রাম মিনি অ্যাপের অফিশিয়াল স্ক্রিপ্ট-->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+            color: #334155;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #1e3a8a;
+            margin-top: 0;
+            font-size: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .instruction {
+            font-size: 13px;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            resize: none;
+            font-family: monospace;
+            font-size: 12px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>👥 FB 0 Fnd Cookies Sheet</h2>
+    
+    <div class="instruction">
+        📋 <b>নির্দেশনা:</b> আপনার গুগল শিট থেকে UID, Password এবং Cookies কলামগুলো একসাথে কপি করুন এবং নিচের বক্সে সরাসরি পেস্ট করে দিন। 
+    </div>
+
+    <!-- ডাটা পেস্ট করার মূল বক্স -->
+    <textarea id="sheetData" placeholder="এখানে সরাসরি গুগল শিট থেকে কপি করা ডাটা পেস্ট করুন...&#10;&#10;উদাহরণ:&#10;61569674...  kuhely27  DZUT6YXY...&#10;61569698...  kuhely27  OV3JY3X4..."></textarea>
+    
+    <button class="btn-submit" onclick="submitData()">🚀 Submit Accounts</button>
+</div>
+
+<script>
+    // টেলিগ্রাম মিনি অ্যাপ ইনিশিয়ালাইজ করা
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // মিনি অ্যাপটি পুরো স্ক্রিন জুড়ে ওপেন হবে
+
+    function submitData() {
+        const dataText = document.getElementById('sheetData').value.trim();
+        
+        if (!dataText) {
+            alert('দয়া করে আগে ডাটা পেস্ট করুন!');
+            return;
+        }
+
+        // ডাটাটি সরাসরি বটের ব্যাকগ্রাউন্ডে পাঠিয়ে দেওয়া হচ্ছে
+        tg.sendData(dataText);
+        
+        // সাবমিট হওয়ার পর মিনি অ্যাপটি অটোমেটিক বন্ধ হয়ে যাবে
+        tg.close();
+    }
+</script>
+
+</body>
+</html>
