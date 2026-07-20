@@ -2,278 +2,187 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FB 0 Fnd Cookies Sheet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FB 0 Fnd Cookies Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+        :root { 
+            --header-gradient: linear-gradient(135deg, #ff007f, #007fff); 
+            --bg: #0f0c1b; 
+            --card-bg: #1a162b;
+            --warning: #ff0000; 
+            --text: #ffffff;
+            --border: #3c2a4d;
+            --submit-gradient: linear-gradient(135deg, #00c853, #64dd17); 
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            box-sizing: border-box;
-            transition: filter 0.3s ease;
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 5px; color: var(--text); }
+        
+        .header { 
+            background: var(--header-gradient); 
+            color: white; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 5px; font-size: 15px; font-weight: bold; letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 127, 255, 0.4);
         }
-        .header-title {
-            background: linear-gradient(135deg, #ec4899, #3b82f6);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 16px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
+        
+        .notice-box { 
+            background: rgba(255, 0, 0, 0.15); border: 2px dashed var(--warning); color: #ff4d4d; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 8px; font-size: 12px; font-weight: bold; line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        textarea {
-            width: 100%;
-            height: 80px;
-            padding: 10px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: #f8fafc;
-            resize: none;
-            font-size: 13px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
+
+        .paste-box { 
+            width: 100%; height: 55px; border: 1px solid #007fff; border-radius: 5px; padding: 6px; box-sizing: border-box; margin-bottom: 5px; background: var(--card-bg); font-size: 12px; outline: none; color: #fff;
+            box-shadow: 0 0 8px rgba(0, 127, 255, 0.2);
         }
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            max-height: 400px;
+        .paste-box::placeholder { color: #8a8194; }
+        .paste-box:focus { border-color: #ff007f; box-shadow: 0 0 12px rgba(255, 0, 127, 0.4); }
+        
+        .container { background: var(--card-bg); border-radius: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); overflow-x: auto; max-height: 55vh; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: #241e3a; padding: 6px; border: 1px solid var(--border); font-size: 11px; color: #c77dff; font-weight: bold; }
+        td { border: 1px solid var(--border); padding: 0; }
+        
+        input { width: 100%; border: none; padding: 7px 2px; outline: none; font-size: 11px; text-align: center; background: transparent; color: #fff; }
+        input:focus { background: rgba(0, 127, 255, 0.1); }
+        
+        .footer-btns { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .btn { border: none; border-radius: 5px; font-weight: bold; cursor: pointer; padding: 13px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s; }
+        .btn-add { background: #2d2647; color: #c77dff; border: 1px solid var(--border); }
+        .btn-add:active { background: #3c335e; }
+        .btn-submit { background: var(--submit-gradient); color: white; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4); }
+        .btn-submit:active { transform: scale(0.98); }
+        
+        #custom-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 5, 15, 0.85); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; 
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: left;
-            min-width: 450px;
+
+        .loader-content { text-align: center; color: #ffffff; padding: 0 20px; }
+        .neon-spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(0, 127, 255, 0.1); border-top: 4px solid #007fff; 
+            border-radius: 50%; margin: 0 auto 20px auto; animation: spin 1s linear infinite; box-shadow: 0 0 15px #007fff, inset 0 0 10px #007fff; 
         }
-        th {
-            background: #334155;
-            color: #c084fc;
-            padding: 10px;
-        }
-        td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #334155;
-            background: #1e293b;
-            color: #94a3b8;
-        }
-        .btn-add {
-            width: 100%;
-            background: #475569;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        .btn-submit {
-            width: 100%;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        /* নিয়ন অ্যানিমেশন ও ব্লার ওভারলে */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 5px solid transparent;
-            border-top: 5px solid #00f2fe;
-            border-bottom: 5px solid #4facfe;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-            box-shadow: 0 0 15px #00f2fe, inset 0 0 15px #4facfe;
-        }
-        .success-box {
-            display: none;
-            background: #16a34a;
-            color: white;
-            padding: 20px 40px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
-            text-align: center;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .blur-active {
-            filter: blur(8px);
-            pointer-events: none;
-        }
+        .neon-spinner.success { border: 4px solid #00ff88; box-shadow: 0 0 20px #00ff88; animation: pulse 0.5s ease-in-out forwards; }
+        #loader-text { font-size: 14px; font-weight: bold; margin: 0; color: #e2d6ff; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="container" id="mainContainer">
-    <div class="header-title">FB 0 Fnd Cookies Sheet</div>
-    <textarea id="inputBox" placeholder="গুগল শিট থেকে A, B, C কলাম কপি করে এখানে পেস্ট করুন..." oninput="processPaste()"></textarea>
-    
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 10%">SL</th>
-                    <th style="width: 30%">UID (Col A)</th>
-                    <th style="width: 30%">Password (Col B)</th>
-                    <th style="width: 30%">Cookies (Col C)</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+<div id="custom-overlay">
+    <div class="loader-content">
+        <div class="neon-spinner"></div>
+        <p id="loader-text">⏳ সার্ভারে ডাটা পাঠানো হচ্ছে...</p>
     </div>
-    
-    <button class="btn-add" onclick="addMoreRows()">➕ ADD 20 ROWS</button>
-    <button class="btn-submit" onclick="submitData()">SUBMIT ID</button>
 </div>
 
-<!-- অ্যানিমেশন ওভারলে -->
-<div class="overlay" id="overlayScreen">
-    <div class="spinner" id="neonSpinner"></div>
-    <div class="success-box" id="successMessage">🎉 ID SUBMIT SUCCESSFUL!</div>
+<div class="header">FB 0 Fnd Cookies Sheet</div>
+
+<div class="notice-box">
+    ⚠️ কড়া সতর্কবার্তা: ভুল বা ডুপ্লিকেট আইডি সাবমিট দিলে আপনার সম্পূর্ণ পেমেন্ট আজীবনের জন্য ক্যান্সেল বা ব্লক করা হবে!
+</div>
+
+<textarea class="paste-box" id="paster" placeholder="গুগল শিট থেকে কপি করে এখানে পেস্ট করুন..."></textarea>
+
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th style="width:15%">SL</th>
+                <th>UID</th>
+                <th>Password</th>
+                <th>Cookies</th>
+            </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+    </table>
+</div>
+
+<div class="footer-btns">
+    <button class="btn btn-add" onclick="increaseRows()">➕ Add 20 Rows</button>
+    <button class="btn btn-submit" onclick="sendToBot()">SUBMIT COOKIES IDs</button>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let totalRowsCount = 50; // ডিফল্ট ৫০ টা রো
-    let finalDataList = [];
+    const tbody = document.getElementById('rows');
+    let currentRowCount = 0;
 
-    // প্রথমে ৫০ টা ফাকা রো তৈরি করা
-    function generateEmptyRows(start, end) {
-        const tbody = document.getElementById('tableBody');
-        for (let i = start; i <= end; i++) {
+    function createRows(count) {
+        for(let i=0; i<count; i++) {
+            currentRowCount++;
             let tr = document.createElement('tr');
-            tr.id = `row-${i}`;
-            tr.innerHTML = `<td>${i}</td><td class="uid-td">uid</td><td class="pass-td">password</td><td class="cookie-td">cookies</td>`;
+            tr.innerHTML = `
+                <td style="text-align:center; background:#1e1a33; font-size:9px; color:#a299b8; border: 1px solid var(--border);">${currentRowCount}</td>
+                <td><input class="u" placeholder="uid"></td>
+                <td><input class="p" placeholder="password"></td>
+                <td><input class="c" placeholder="cookies"></td>
+            `;
             tbody.appendChild(tr);
         }
     }
-    generateEmptyRows(1, totalRowsCount);
 
-    // ২০ টা রো বাড়ানোর বাটন
-    function addMoreRows() {
-        let oldTotal = totalRowsCount;
-        totalRowsCount += 20;
-        generateEmptyRows(oldTotal + 1, totalRowsCount);
-    }
+    createRows(50); 
 
-    // পেস্ট করলে অটোমেটিক টেবিলে বসে যাওয়ার লজিক
-    function processPaste() {
-        const rawText = document.getElementById('inputBox').value;
-        let rows = rawText.split(/\r?\n/);
-        finalDataList = [];
+    function increaseRows() { createRows(20); }
 
-        // টেবিল আগে রিসেট (ফাকা) করে নেওয়া
-        for(let i = 1; i <= totalRowsCount; i++) {
-            let tr = document.getElementById(`row-${i}`);
-            if(tr) {
-                tr.querySelector('.uid-td').innerText = 'uid';
-                tr.querySelector('.pass-td').innerText = 'password';
-                tr.querySelector('.cookie-td').innerText = 'cookies';
-            }
-        }
+    document.getElementById('paster').addEventListener('input', function(e) {
+        let text = e.target.value.trim();
+        if(!text) return;
 
-        let sl = 1;
-        rows.forEach(row => {
-            if (row.trim()) {
-                let cols = row.split('\t');
-                if (cols.length >= 2) {
-                    let uid = cols[0] ? cols[0].trim() : "N/A";
-                    let pass = cols[1] ? cols[1].trim() : "N/A";
-                    let cookie = cols[2] ? cols[2].trim() : "N/A";
+        let lines = text.split(/\r?\n/);
+        if (lines.length > currentRowCount) { createRows(lines.length - currentRowCount + 5); }
 
-                    finalDataList.push(uid + "||" + pass + "||" + cookie);
+        let uInputs = document.querySelectorAll('.u');
+        let pInputs = document.querySelectorAll('.p');
+        let cInputs = document.querySelectorAll('.c');
 
-                    // যদি পেস্ট করা ডাটা বর্তমান রো সংখ্যার চেয়ে বেশি হয়, তবে অটো রো বাড়িয়ে নেওয়া
-                    if (sl > totalRowsCount) {
-                        addMoreRows();
-                    }
-
-                    let tr = document.getElementById(`row-${sl}`);
-                    if(tr) {
-                        tr.querySelector('.uid-td').innerText = uid;
-                        tr.querySelector('.pass-td').innerText = pass;
-                        tr.querySelector('.cookie-td').innerText = cookie;
-                    }
-                    sl++;
-                }
-            }
+        lines.forEach((line, index) => {
+            let cols = line.split('\t'); 
+            if(uInputs[index]) uInputs[index].value = cols[0] || '';
+            if(pInputs[index]) pInputs[index].value = cols[1] || '';
+            if(cInputs[index]) cInputs[index].value = cols[2] || '';
         });
-    }
+        setTimeout(() => { e.target.value = ""; }, 800);
+    });
 
-    // সাবমিট এবং নিয়ন অ্যানিমেশন লজিক
-    function submitData() {
-        if (finalDataList.length === 0) {
-            alert('দয়া করে আগে গুগল শিট থেকে ডাটা কপি করে পেস্ট করুন!');
-            return;
+    function sendToBot() {
+        let us = document.querySelectorAll('.u');
+        let ps = document.querySelectorAll('.p');
+        let cs = document.querySelectorAll('.c');
+        let finalRows = [];
+
+        for(let i=0; i<us.length; i++) {
+            if(us[i].value.trim() !== "") {
+                let uid = us[i].value.trim();
+                let pass = ps[i].value.trim() || 'N/A';
+                let cookie = cs[i].value.trim() || 'N/A';
+                finalRows.push(uid + "||" + pass + "||" + cookie);
+            }
         }
 
-        const container = document.getElementById('mainContainer');
-        const overlay = document.getElementById('overlayScreen');
-        const spinner = document.getElementById('neonSpinner');
-        const successBox = document.getElementById('successMessage');
+        if(finalRows.length === 0) { 
+            if (tg && tg.showAlert) { tg.showAlert("❌ সাবমিট করার জন্য কোনো আইডি পাওয়া যায়নি!"); } 
+            else { alert("❌ সাবমিট করার জন্য কোনো আইডি পাওয়া যায়নি!"); }
+            return; 
+        }
 
-        // ১. ব্যাকগ্রাউন্ড ব্লার এবং নিয়ন অ্যানিমেশন চালু (১০ সেকেন্ড)
-        container.classList.add('blur-active');
-        overlay.style.display = 'flex';
-        spinner.style.display = 'block';
-        successBox.style.display = 'none';
+        document.getElementById('custom-overlay').style.display = "flex";
 
-        setTimeout(() => {
-            // ২. ১০ সেকেন্ড পর স্পিনার বন্ধ এবং সাকসেস মেসেজ চালু (৩ সেকেন্ড)
-            spinner.style.display = 'none';
-            successBox.style.display = 'block';
-
-            setTimeout(() => {
-                // ৩. ৩ সেকেন্ড পর বটের কাছে ডাটা পাঠানো এবং অ্যাপ ক্লোজ করা
-                tg.sendData("📊TASK_DATA:\n" + finalDataList.join("\n"));
-                tg.close();
-            }, 3000);
-
-        }, 10000);
+        setTimeout(function() {
+            var spinner = document.querySelector(".neon-spinner");
+            if(spinner) spinner.classList.add("success");
+            document.getElementById("loader-text").innerHTML = "✅ ID SUBMIT SUCCESSFUL!";
+            
+            setTimeout(function() {
+                // বটের প্রসেসিং এর সুবিধার্থে বিশেষ টেক্সট প্রিফিক্স ব্যবহার করে ডাটা পাঠানো হচ্ছে
+                window.Telegram.WebApp.sendData("📊TASK_DATA:\n" + finalRows.join("\n"));
+                window.Telegram.WebApp.close(); 
+            }, 3000); // সাকসেস মেসেজ ৩ সেকেন্ড চলবে
+        }, 10000); // নিয়ন অ্যানিমেশন ১০ সেকেন্ড চলবে
     }
 </script>
-
 </body>
 </html>
