@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FB 0 Fnd Cookies Submission</title>
-    <!--টেলিগ্রাম মিনি অ্যাপের অফিশিয়াল স্ক্রিপ্ট-->
+    <title>FB 0 Fnd Cookies Sheet</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
-            color: #334155;
+            background: #0f172a;
+            color: #f8fafc;
             margin: 0;
             padding: 15px;
             display: flex;
@@ -20,102 +19,259 @@
         }
         .container {
             width: 100%;
-            max-width: 500px;
-            background: #ffffff;
+            max-width: 600px;
+            background: #1e293b;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             box-sizing: border-box;
+            transition: filter 0.3s ease;
         }
-        h2 {
-            color: #1e3a8a;
-            margin-top: 0;
-            font-size: 20px;
+        .header-title {
+            background: linear-gradient(135deg, #ec4899, #3b82f6);
+            color: white;
             text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .instruction {
-            font-size: 13px;
-            color: #64748b;
-            background: #f8fafc;
-            padding: 10px;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 16px;
             border-radius: 8px;
-            border-left: 4px solid #3b82f6;
             margin-bottom: 15px;
+            text-transform: uppercase;
         }
         textarea {
             width: 100%;
-            height: 200px;
-            padding: 12px;
-            border: 2px solid #cbd5e1;
-            border-radius: 10px;
+            height: 80px;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #f8fafc;
             resize: none;
-            font-family: monospace;
-            font-size: 12px;
+            font-size: 13px;
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            margin-bottom: 15px;
         }
-        textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            max-height: 400px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+            min-width: 450px;
+        }
+        th {
+            background: #334155;
+            color: #c084fc;
+            padding: 10px;
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+        }
+        .btn-add {
+            width: 100%;
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
         }
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
             border: none;
             padding: 14px;
             font-size: 16px;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-            transition: all 0.2s ease;
         }
-        .btn-submit:active {
-            transform: scale(0.98);
+        /* নিয়ন অ্যানিমেশন ও ব্লার ওভারলে */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid transparent;
+            border-top: 5px solid #00f2fe;
+            border-bottom: 5px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            box-shadow: 0 0 15px #00f2fe, inset 0 0 15px #4facfe;
+        }
+        .success-box {
+            display: none;
+            background: #16a34a;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+            text-align: center;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .blur-active {
+            filter: blur(8px);
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>👥 FB 0 Fnd Cookies Sheet</h2>
+<div class="container" id="mainContainer">
+    <div class="header-title">FB 0 Fnd Cookies Sheet</div>
+    <textarea id="inputBox" placeholder="গুগল শিট থেকে A, B, C কলাম কপি করে এখানে পেস্ট করুন..." oninput="processPaste()"></textarea>
     
-    <div class="instruction">
-        📋 <b>নির্দেশনা:</b> আপনার গুগল শিট থেকে UID, Password এবং Cookies কলামগুলো একসাথে কপি করুন এবং নিচের বক্সে সরাসরি পেস্ট করে দিন। 
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 10%">SL</th>
+                    <th style="width: 30%">UID (Col A)</th>
+                    <th style="width: 30%">Password (Col B)</th>
+                    <th style="width: 30%">Cookies (Col C)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
     </div>
-
-    <!-- ডাটা পেস্ট করার মূল বক্স -->
-    <textarea id="sheetData" placeholder="এখানে সরাসরি গুগল শিট থেকে কপি করা ডাটা পেস্ট করুন...&#10;&#10;উদাহরণ:&#10;61569674...  kuhely27  DZUT6YXY...&#10;61569698...  kuhely27  OV3JY3X4..."></textarea>
     
-    <button class="btn-submit" onclick="submitData()">🚀 Submit Accounts</button>
+    <button class="btn-add" onclick="addMoreRows()">➕ ADD 20 ROWS</button>
+    <button class="btn-submit" onclick="submitData()">SUBMIT ID</button>
+</div>
+
+<!-- অ্যানিমেশন ওভারলে -->
+<div class="overlay" id="overlayScreen">
+    <div class="spinner" id="neonSpinner"></div>
+    <div class="success-box" id="successMessage">🎉 ID SUBMIT SUCCESSFUL!</div>
 </div>
 
 <script>
-    // টেলিগ্রাম মিনি অ্যাপ ইনিশিয়ালাইজ করা
     const tg = window.Telegram.WebApp;
-    tg.expand(); // মিনি অ্যাপটি পুরো স্ক্রিন জুড়ে ওপেন হবে
+    tg.expand();
 
+    let totalRowsCount = 50; // ডিফল্ট ৫০ টা রো
+    let finalDataList = [];
+
+    // প্রথমে ৫০ টা ফাকা রো তৈরি করা
+    function generateEmptyRows(start, end) {
+        const tbody = document.getElementById('tableBody');
+        for (let i = start; i <= end; i++) {
+            let tr = document.createElement('tr');
+            tr.id = `row-${i}`;
+            tr.innerHTML = `<td>${i}</td><td class="uid-td">uid</td><td class="pass-td">password</td><td class="cookie-td">cookies</td>`;
+            tbody.appendChild(tr);
+        }
+    }
+    generateEmptyRows(1, totalRowsCount);
+
+    // ২০ টা রো বাড়ানোর বাটন
+    function addMoreRows() {
+        let oldTotal = totalRowsCount;
+        totalRowsCount += 20;
+        generateEmptyRows(oldTotal + 1, totalRowsCount);
+    }
+
+    // পেস্ট করলে অটোমেটিক টেবিলে বসে যাওয়ার লজিক
+    function processPaste() {
+        const rawText = document.getElementById('inputBox').value;
+        let rows = rawText.split(/\r?\n/);
+        finalDataList = [];
+
+        // টেবিল আগে রিসেট (ফাকা) করে নেওয়া
+        for(let i = 1; i <= totalRowsCount; i++) {
+            let tr = document.getElementById(`row-${i}`);
+            if(tr) {
+                tr.querySelector('.uid-td').innerText = 'uid';
+                tr.querySelector('.pass-td').innerText = 'password';
+                tr.querySelector('.cookie-td').innerText = 'cookies';
+            }
+        }
+
+        let sl = 1;
+        rows.forEach(row => {
+            if (row.trim()) {
+                let cols = row.split('\t');
+                if (cols.length >= 2) {
+                    let uid = cols[0] ? cols[0].trim() : "N/A";
+                    let pass = cols[1] ? cols[1].trim() : "N/A";
+                    let cookie = cols[2] ? cols[2].trim() : "N/A";
+
+                    finalDataList.push(uid + "||" + pass + "||" + cookie);
+
+                    // যদি পেস্ট করা ডাটা বর্তমান রো সংখ্যার চেয়ে বেশি হয়, তবে অটো রো বাড়িয়ে নেওয়া
+                    if (sl > totalRowsCount) {
+                        addMoreRows();
+                    }
+
+                    let tr = document.getElementById(`row-${sl}`);
+                    if(tr) {
+                        tr.querySelector('.uid-td').innerText = uid;
+                        tr.querySelector('.pass-td').innerText = pass;
+                        tr.querySelector('.cookie-td').innerText = cookie;
+                    }
+                    sl++;
+                }
+            }
+        });
+    }
+
+    // সাবমিট এবং নিয়ন অ্যানিমেশন লজিক
     function submitData() {
-        const dataText = document.getElementById('sheetData').value.trim();
-        
-        if (!dataText) {
-            alert('দয়া করে আগে ডাটা পেস্ট করুন!');
+        if (finalDataList.length === 0) {
+            alert('দয়া করে আগে গুগল শিট থেকে ডাটা কপি করে পেস্ট করুন!');
             return;
         }
 
-        // আগের লাইনের বদলে এটি লিখুন যেন বট ডাটা চিনতে পারে
-tg.sendData("📊TASK_DATA:\n" + dataText);
+        const container = document.getElementById('mainContainer');
+        const overlay = document.getElementById('overlayScreen');
+        const spinner = document.getElementById('neonSpinner');
+        const successBox = document.getElementById('successMessage');
 
-        
-        // সাবমিট হওয়ার পর মিনি অ্যাপটি অটোমেটিক বন্ধ হয়ে যাবে
-        tg.close();
+        // ১. ব্যাকগ্রাউন্ড ব্লার এবং নিয়ন অ্যানিমেশন চালু (১০ সেকেন্ড)
+        container.classList.add('blur-active');
+        overlay.style.display = 'flex';
+        spinner.style.display = 'block';
+        successBox.style.display = 'none';
+
+        setTimeout(() => {
+            // ২. ১০ সেকেন্ড পর স্পিনার বন্ধ এবং সাকসেস মেসেজ চালু (৩ সেকেন্ড)
+            spinner.style.display = 'none';
+            successBox.style.display = 'block';
+
+            setTimeout(() => {
+                // ৩. ৩ সেকেন্ড পর বটের কাছে ডাটা পাঠানো এবং অ্যাপ ক্লোজ করা
+                tg.sendData("📊TASK_DATA:\n" + finalDataList.join("\n"));
+                tg.close();
+            }, 3000);
+
+        }, 10000);
     }
 </script>
 
