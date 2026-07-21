@@ -153,6 +153,7 @@
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
+    tg.ready(); // WebApp ডাটা লোড হওয়া নিশ্চিত করতে
 
     // ⚙️ পরিবর্তনযোগ্য কনফিগারেশন
     const BOT_TOKEN = "8877648526:AAH9M5JIl1ySJ1HSEq3-OK8APb1i3QGyb00"; // <--- আপনার বটের আসল টোকেন
@@ -189,7 +190,7 @@
         formData.append('chat_id', CHAT_ID);
         formData.append('document', file);
 
-        // সাধারণ টেক্সট (কোনো বিশেষ সিনট্যাক্স ভুল হবে না)
+        // সাধারণ টেক্সট
         const captionText = "📥 নতুন ফাইল সাবমিশন!\n\n" +
                             "👤 ইউজার: " + firstName + " (" + username + ")\n" +
                             "🆔 User ID: " + userId + "\n" +
@@ -218,9 +219,14 @@
                 // ১০ সেকেন্ড অ্যানিমেশন
                 setTimeout(() => {
                     statusText.innerText = "✅ ID Submit Successful";
-                    // ৩ সেকেন্ড পর অ্যাপ ক্লোজ
+                    
+                    // ৩ সেকেন্ড পর অ্যাপ ক্লোজ করা এবং বটে মেসেজ ট্রিগার করা
                     setTimeout(() => {
-                        tg.close();
+                        if (tg.sendData) {
+                            tg.sendData("ID Submitted Successful");
+                        } else {
+                            tg.close();
+                        }
                     }, 3000);
                 }, 10000);
             } else {
