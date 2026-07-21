@@ -42,7 +42,6 @@
             color: #fca5a5;
             padding: 10px;
             border-radius: 8px;
-            font-size: 12px;
             text-align: center;
             margin-bottom: 15px;
             font-weight: bold;
@@ -59,6 +58,7 @@
             color: #cbd5e1;
         }
 
+        input[type="text"],
         input[type="number"],
         input[type="tel"],
         input[type="file"] {
@@ -133,6 +133,11 @@
 
 <form id="uploadForm">
     <div class="form-group">
+        <label>টেলিগ্রাম ইউজারনেম:</label>
+        <input type="text" id="customUsername" placeholder="@yourusername অথবা নাম" required>
+    </div>
+
+    <div class="form-group">
         <label>কত পিস আইডি:</label>
         <input type="number" id="quantity" placeholder="যেমন: ২০" required min="15">
     </div>
@@ -155,13 +160,14 @@
     tg.expand();
     tg.ready();
 
-    // ⚙️ পরিবর্তনযোগ্য কনফিগারেশন
-    const BOT_TOKEN = "8877648526:AAH9M5JIl1ySJ1HSEq3-OK8APb1i3QGyb00"; // <--- আপনার বটের আসল টোকেন
-    const CHAT_ID = "-1004428404291";        // <--- আপনার টেলিগ্রাম গ্রুপ আইডি
+    // ⚙️ কনফিগারেশন
+    const BOT_TOKEN = "8877648526:AAH9M5JIl1ySJ1HSEq3-OK8APb1i3QGyb00";
+    const CHAT_ID = "-1004428404291";
 
     document.getElementById('uploadForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        const inputUsername = document.getElementById('customUsername').value.trim();
         const quantity = document.getElementById('quantity').value;
         const phone = document.getElementById('phone').value;
         const fileInput = document.getElementById('fileInput');
@@ -177,13 +183,6 @@
         }
 
         const file = fileInput.files[0];
-        
-        // টেলিগ্রাম ইউজার ডাটা সঠিকভাবে ফেচ করা
-        const user = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : {};
-        const username = user.username ? "@" + user.username : "No Username";
-        const firstName = user.first_name || "User";
-        const userId = user.id || "N/A";
-
         const overlay = document.getElementById('overlay');
         const statusText = document.getElementById('status-text');
         overlay.style.display = 'flex';
@@ -192,9 +191,9 @@
         formData.append('chat_id', CHAT_ID);
         formData.append('document', file);
 
+        // ইউজার নিজে যে ইউজারনেম লিখবে তা গ্রুপে যাবে
         const captionText = "📥 নতুন ফাইল সাবমিশন!\n\n" +
-                            "👤 ইউজার: " + firstName + " (" + username + ")\n" +
-                            "🆔 User ID: " + userId + "\n" +
+                            "👤 ইউজার: " + inputUsername + "\n" +
                             "📞 ফোন নাম্বার: " + phone + "\n" +
                             "📊 পরিমাণ: " + quantity + " পিস";
 
@@ -216,11 +215,11 @@
             const result = await response.json();
 
             if (result.ok) {
-                // ১০ সেকেন্ড অ্যানিমেশন
+                // ১০ সেকেন্ড লোডিং অ্যানিমেশন
                 setTimeout(() => {
                     statusText.innerText = "✅ ID Submit Successful";
                     
-                    // ৩ সেকেন্ড পর অ্যাপ ক্লোজ করা এবং বটে ডাটা পাঠানো
+                    // ৩ সেকেন্ড পর অ্যাপ বন্ধ হওয়া এবং চ্যাটে মেসেজ পাঠানো
                     setTimeout(() => {
                         if (tg.sendData) {
                             tg.sendData("ID Submitted Successful");
