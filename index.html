@@ -153,7 +153,7 @@
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    tg.ready(); // WebApp ডাটা লোড হওয়া নিশ্চিত করতে
+    tg.ready();
 
     // ⚙️ পরিবর্তনযোগ্য কনফিগারেশন
     const BOT_TOKEN = "8877648526:AAH9M5JIl1ySJ1HSEq3-OK8APb1i3QGyb00"; // <--- আপনার বটের আসল টোকেন
@@ -177,7 +177,9 @@
         }
 
         const file = fileInput.files[0];
-        const user = tg.initDataUnsafe.user || {};
+        
+        // টেলিগ্রাম ইউজার ডাটা সঠিকভাবে ফেচ করা
+        const user = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : {};
         const username = user.username ? "@" + user.username : "No Username";
         const firstName = user.first_name || "User";
         const userId = user.id || "N/A";
@@ -190,7 +192,6 @@
         formData.append('chat_id', CHAT_ID);
         formData.append('document', file);
 
-        // সাধারণ টেক্সট
         const captionText = "📥 নতুন ফাইল সাবমিশন!\n\n" +
                             "👤 ইউজার: " + firstName + " (" + username + ")\n" +
                             "🆔 User ID: " + userId + "\n" +
@@ -199,7 +200,6 @@
 
         formData.append('caption', captionText);
 
-        // Received ইনলাইন বাটন
         const replyMarkup = {
             inline_keyboard: [
                 [{ text: "📩 Received", callback_data: "/mark_received" }]
@@ -220,7 +220,7 @@
                 setTimeout(() => {
                     statusText.innerText = "✅ ID Submit Successful";
                     
-                    // ৩ সেকেন্ড পর অ্যাপ ক্লোজ করা এবং বটে মেসেজ ট্রিগার করা
+                    // ৩ সেকেন্ড পর অ্যাপ ক্লোজ করা এবং বটে ডাটা পাঠানো
                     setTimeout(() => {
                         if (tg.sendData) {
                             tg.sendData("ID Submitted Successful");
